@@ -2,56 +2,137 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>構内配送マップ アイコン</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>構内配送マップ</title>
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
     <link rel="manifest" href="manifest.webmanifest">
+    <meta name="apple-mobile-web-app-title" content="構内配送マップ">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#087CF0">
     <style>
+      :root {
+        --accent: #087cf0;
+        --ink: #17202a;
+        --muted: #5f6b7a;
+        --line: #d7dee8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
       body {
+        width: 100%;
+        min-height: 100%;
         margin: 0;
-        min-height: 100vh;
+      }
+
+      body {
         display: grid;
         place-items: center;
+        padding: 24px;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background: #f6f8fb;
-        color: #17202a;
+        color: var(--ink);
       }
+
       main {
-        width: min(92vw, 560px);
+        width: min(92vw, 420px);
         padding: 24px;
-        border: 1px solid #d7dee8;
+        border: 1px solid var(--line);
         border-radius: 10px;
         background: #fff;
         box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+        text-align: center;
       }
+
       img {
-        width: 120px;
-        height: 120px;
+        width: 128px;
+        height: 128px;
         display: block;
-        margin-bottom: 16px;
-        border-radius: 24px;
+        margin: 0 auto 16px;
+        border-radius: 28px;
       }
+
       h1 {
         margin: 0 0 8px;
         font-size: 22px;
+        line-height: 1.35;
       }
+
       p {
+        margin: 10px 0;
+        color: var(--muted);
         line-height: 1.7;
+        text-align: left;
       }
-      code {
-        word-break: break-all;
+
+      button,
+      a.button {
+        width: 100%;
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 16px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
+        font: inherit;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .error {
+        margin-top: 14px;
+        padding: 10px;
+        border: 1px solid #fecdd3;
+        border-radius: 8px;
+        background: #fff1f2;
+        color: #9f1239;
+        text-align: left;
       }
     </style>
   </head>
   <body>
     <main>
-      <img src="assets/apple-touch-icon.png" alt="構内配送マップ アイコン">
-      <h1>構内配送マップ アイコン</h1>
-      <p>このページが表示されていれば、GitHub Pagesの公開は成功しています。</p>
-      <p>Apps Scriptのアプリ設定には、各PNGファイルのURLを設定してください。</p>
+      <img src="assets/apple-touch-icon.png" alt="構内配送マップ">
+      <h1>構内配送マップ</h1>
+      <p>このページをホーム画面へ追加すると、正式アイコンで表示されます。</p>
+      <p>ホーム画面から起動すると、構内配送マップWebアプリを開きます。</p>
+      <a id="openAppButton" class="button" href="#">構内配送マップを開く</a>
+      <div id="setupError" class="error" hidden>
+        `config.js`にApps ScriptのWebアプリURLを設定してください。
+      </div>
     </main>
+    <script src="config.js"></script>
+    <script>
+      (function() {
+        var appUrl = String(window.KOUNAI_DELIVERY_MAP_WEB_APP_URL || '').trim();
+        var button = document.getElementById('openAppButton');
+        var error = document.getElementById('setupError');
+        var standalone = window.navigator.standalone === true ||
+          window.matchMedia('(display-mode: standalone)').matches;
+
+        if (!appUrl || appUrl.indexOf('https://') !== 0) {
+          button.hidden = true;
+          error.hidden = false;
+          return;
+        }
+
+        button.href = appUrl;
+        if (standalone) {
+          window.location.replace(appUrl);
+        }
+      })();
+    </script>
   </body>
 </html>
